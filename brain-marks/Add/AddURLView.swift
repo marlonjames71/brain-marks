@@ -22,7 +22,7 @@ struct AddURLView: View {
     var body: some View {
         NavigationView {
             Form {
-                TextField("Enter copied url", text: $newEntry)
+                TextField("EnterCopiedURL", text: $newEntry)
                     .autocapitalization(.none)
                 Picker(selection: $selectedCategory , label: Text("Category"), content: {
                     ForEach(categories,id:\.self) { category in
@@ -30,7 +30,12 @@ struct AddURLView: View {
                     }
                 })
             }
+            .navigationTitle(Text("Add Tweet URL"))
+            .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(
+                leading: Button("Cancel") {
+                    presentationMode.wrappedValue.dismiss()
+                },
                 trailing: Button("Save") {
                     if selectedCategory.name == "" {
                         viewModel.alertItem = AlertContext.noCategory
@@ -41,7 +46,7 @@ struct AddURLView: View {
                             case .success(let tweet):
                                 
                                 DataStoreManger.shared.fetchCategories { (result) in
-                                    if case .success(_) = result {
+                                    if case .success = result {
                                         DataStoreManger.shared.createTweet(
                                             tweet: tweet,
                                             category: selectedCategory)
@@ -49,7 +54,7 @@ struct AddURLView: View {
                                     presentationMode.wrappedValue.dismiss()
                                 }
                                 
-                            case .failure(_):
+                            case .failure:
                                 viewModel.alertItem = AlertContext.badURL
                             }
                         }
@@ -67,8 +72,7 @@ struct AddURLView: View {
         .alert(item: $viewModel.alertItem) { alertItem in
             Alert(title: Text(alertItem.title),
                   message: Text(alertItem.message),
-                  dismissButton: alertItem.dismissButon)
-            
+                  dismissButton: alertItem.dismissButon) 
         }
     }
 }

@@ -8,11 +8,13 @@ extension AWSTweet {
     case id
     case tweetID
     case text
+    case timeStamp
     case authorName
     case authorUsername
     case profileImageURL
     case category
-  }
+    case userVerified
+}
   
   public static let keys = CodingKeys.self
   //  MARK: - ModelSchema 
@@ -26,10 +28,12 @@ extension AWSTweet {
       .id(),
       .field(aWSTweet.tweetID, is: .required, ofType: .string),
       .field(aWSTweet.text, is: .optional, ofType: .string),
+      .field(aWSTweet.timeStamp, is: .optional, ofType: .string),
       .field(aWSTweet.authorName, is: .optional, ofType: .string),
       .field(aWSTweet.authorUsername, is: .optional, ofType: .string),
       .field(aWSTweet.profileImageURL, is: .optional, ofType: .string),
-      .belongsTo(aWSTweet.category, is: .optional, ofType: AWSCategory.self, targetName: "awsTweetCategoryId")
+      .belongsTo(aWSTweet.category, is: .optional, ofType: AWSCategory.self, targetName: "awsTweetCategoryId"),
+      .field(aWSTweet.userVerified, is: .optional, ofType: .bool)
     )
     }
 }

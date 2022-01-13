@@ -65,7 +65,7 @@ class DataStoreManger {
     func deleteCategory(category: AWSCategory) {
         Amplify.DataStore.delete(category) { result in
             switch result {
-            case .success():
+            case .success:
                 print("✅ Deleted category")
             case .failure(let error):
                 print("❌ Could NOT delete category: \(error)")
@@ -75,7 +75,7 @@ class DataStoreManger {
     
     /// Edit a category's name
     /// - Parameter category: `AWSCategory` to edit
-    func editCategory(category: AWSCategory, newName: String) {
+    func editCategory(category: AWSCategory, newName: String, newThumbnail: String) {
         Amplify.DataStore.query(AWSCategory.self, where: AWSCategory.keys.id.eq(category.id)) { result in
             switch result {
             case .success(let categories):
@@ -84,6 +84,7 @@ class DataStoreManger {
                     return
                 }
                 updatedCategory.name = newName
+                updatedCategory.imageName = newThumbnail
                 Amplify.DataStore.save(updatedCategory) { result in
                     switch result {
                     case .success(let savedCategory):
@@ -108,10 +109,12 @@ class DataStoreManger {
         let awsTweet = AWSTweet(id: UUID().uuidString,
                                 tweetID: tweet.id,
                                 text: tweet.text,
+                                timeStamp: tweet.timeStamp,
                                 authorName: tweet.authorName,
                                 authorUsername: tweet.authorUsername,
                                 profileImageURL: tweet.profileImageURL,
-                                category: category)
+                                category: category,
+                                userVerified: tweet.userVerified)
         
         Amplify.DataStore.save(awsTweet) { result in
             switch result {
@@ -149,7 +152,7 @@ class DataStoreManger {
     func deleteTweet(_ tweet: AWSTweet) {
         Amplify.DataStore.delete(tweet) { result in
             switch result {
-            case .success():
+            case .success:
                 print("✅ Deleted tweet")
             case .failure(let error):
                 print("❌ Could NOT delete tweet: \(error)")
